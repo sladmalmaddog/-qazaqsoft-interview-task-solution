@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Unit Tests — QuizEngine</title>
+</head>
+<body>
+  <h1>Unit Tests</h1>
+  <pre id="output"></pre>
+
+  <script>
+    function assert(condition, message) {
+      if (!condition) {
+        throw new Error(message);
+      }
+    }
+
+    function log(msg) {
+      document.querySelector("#output").textContent += msg + "\n";
+    }
+
+    async function loadQuiz() {
+      const res = await fetch("./questions.json");
+      return res.json();
+    }
+
+    (async function runTests() {
+      try {
+        const quiz = await loadQuiz();
+
+        const engine = new QuizEngine(quiz);
+
+        log("✔ Engine создан");
+
+        // -----------------------------
+        // первый тест - базовая инициализация
+        // -----------------------------
+        assert(engine.currentIndex === 0, "currentIndex должен быть 0");
+        assert(engine.length === quiz.questions.length, "length должен совпадать");
+
+        log("✔ Инициализация OK");
+
+        // -----------------------------
+        // второй тест, проверка кнопок навигации
+        // -----------------------------
+        engine.next();
+        assert(engine.currentIndex === 1, "next() не работает");
+
+        engine.prev();
+        assert(engine.currentIndex === 0, "prev() не работает");
+
+        log("✔ Навигация OK");
+
+        // -----------------------------
+        // трети тест, проверка выбора ответа
+        // -----------------------------
+        const firstQuestion = engine.currentQuestion;
+
+        engine.select(0);
+        assert(
+          engine.getSelectedIndex() === 0,
+          "select() или getSelectedIndex() не работает"
+        );
+
+        assert(
+          engine.answers[firstQuestion.id] === 0,
+          "answers не сохраняется"
+        );
+
+        log("✔ Выбор ответа OK");
+
+        // -----------------------------
+        // четвертый тест, подсчеты
+        // -----------------------------
+        // тут мы принудительно выбираем все правильные ответы
+        // -----------------------------
+        engine.questions.forEach(q => {
+          engine.answers[q.id] = q.correctIndex;
+        });
+
+        const result = engine.finish();
+
+        assert(result.correct === quiz.questions.length, "finish(): неправильный подсчёт correct");
+        assert(result.passed === true, "finish(): должен быть pass=true");
+
+        log("✔ Finish логика OK");
+
+        // -----------------------------
+        // послепдний тест, проверка таймера
+        // -----------------------------
+        engine.remainingSec = 2;
+
+        const r1 = engine.tick();
+        assert(r1 === null, "tick не должен завершать тест сразу");
+
+        const r2 = engine.tick();
+        assert(r2 !== null, "tick должен завершить тест при 0 времени");
+
+        log("✔ Timer OK");
+
+        log("\n🎉 ВСЕ ТЕСТЫ ПРОЙДЕНЫ");
+
+      } catch (err) {
+        log("❌ ОШИБКА: " + err.message);
+        console.error(err);
+      }
+    })();
+  </script>
+</body>
+</html>
