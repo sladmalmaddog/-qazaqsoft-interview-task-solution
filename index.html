@@ -1,73 +1,67 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Quiz — Образовательная платформа</title>
-    <link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body>
-    <main class="container" aria-live="polite">
-      <header class="header">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz — Образовательная платформа</title>
+  <meta name="description" content="Мини-модуль прохождения теста с аналитикой и поддержкой клавиатуры." />
+  <link rel="stylesheet" href="./styles.css" />
+  <script defer src="./app.js"></script>
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero card">
+      <div class="hero__text">
+        <p class="eyebrow">Quiz module</p>
         <h1 id="quiz-title">Загрузка…</h1>
-        <div class="meta">
-          <div id="progress" aria-label="Прогресс теста">Вопрос — / —</div>
-          <div id="timer" aria-label="Оставшееся время">—:—</div>
+        <p class="muted">Тест поддерживает навигацию с клавиатуры, аналитику и случайный порядок вопросов.</p>
+      </div>
+
+      <div class="hero__meta" aria-live="polite">
+        <div class="meta-pill">
+          <span class="meta-pill__label">Прогресс</span>
+          <strong id="progress">Вопрос — / —</strong>
         </div>
-      </header>
 
-      <section
-        id="question-section"
-        class="card"
-        aria-labelledby="question-text"
-      >
-        <div id="question-text" class="question-text">Загрузка вопроса…</div>
-        <form
-          id="options-form"
-          class="options"
-          role="radiogroup"
-          aria-label="Варианты ответа"
-        ></form>
-      </section>
-
-      <nav class="actions">
-        <button id="btn-prev" class="btn" type="button" aria-label="Назад">
-          Назад
-        </button>
-        <button
-          id="btn-next"
-          class="btn btn-primary"
-          type="button"
-          aria-label="Далее"
-          disabled
-        >
-          Далее
-        </button>
-        <button
-          id="btn-finish"
-          class="btn btn-accent"
-          type="button"
-          aria-label="Завершить"
-          disabled
-        >
-          Завершить
-        </button>
-      </nav>
-
-      <section id="result-section" class="card hidden" aria-live="polite">
-        <h2>Результат</h2>
-        <p id="result-summary">—</p>
-        <div class="actions">
-          <button id="btn-review" class="btn" type="button">
-            Посмотреть ответы
-          </button>
-          <button id="btn-restart" class="btn btn-primary" type="button">
-            Пройти заново
-          </button>
+        <div class="meta-pill">
+          <span class="meta-pill__label">Время</span>
+          <strong id="timer">—:—</strong>
         </div>
-      </section>
-    </main>
+      </div>
+    </section>
 
-    <script src="./app.js" type="module"></script>
-  </body>
+    <section id="quiz-section" class="card quiz" aria-labelledby="quiz-title">
+      <div class="quiz__header">
+        <p id="question-counter" class="muted">Загрузка вопроса…</p>
+      </div>
+
+      <div class="question-block">
+        <p id="question-text" class="question-text"></p>
+
+        <form id="options-form" class="options" aria-label="Варианты ответов"></form>
+      </div>
+
+      <div class="actions">
+        <button id="btn-prev" type="button" class="btn">Назад</button>
+        <button id="btn-next" type="button" class="btn btn-primary">Далее</button>
+        <button id="btn-finish" type="button" class="btn btn-accent hidden">Завершить</button>
+      </div>
+    </section>
+
+    <section id="result-section" class="card result hidden">
+      <h2>Результат</h2>
+
+      <p id="result-summary"></p>
+
+      <div id="analytics-panel"></div>
+
+      <div class="actions">
+        <button id="btn-review" type="button" class="btn btn-primary">Посмотреть ответы</button>
+        <button id="btn-restart" type="button" class="btn">Начать заново</button>
+      </div>
+
+      <div id="review-panel" class="hidden"></div>
+    </section>
+  </main>
+</body>
 </html>
